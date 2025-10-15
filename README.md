@@ -88,5 +88,5 @@ MIT License — see [`LICENSE`](LICENSE) for details.
 
 ## Credits
 
-Concept and development by **[Your Name]**  
+Concept and development by **[Rahat Mohammed]**  
 Research focus: machine cognition, self-learning systems, and emergent AI architecture.
