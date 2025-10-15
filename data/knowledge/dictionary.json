@@ -1,0 +1,22 @@
+{
+    "laufen": {
+        "part_of_speech": "verb",
+        "definitions": [
+            "sich zu Fuß fortbewegen",
+            "funktionieren oder in Betrieb sein"]
+        ,
+        "examples": ["Ich laufe zur Schule", "Die Maschine läuft gut."]
+    },
+    "Katze": {
+        "part_of_speech": "noun",
+        "definitions": [
+            "ein kleines, pelziges Haustier, das Mäuse jagt"
+        ],
+        "example": ["Die Katze schläft auf dem Sofa"]
+    },
+    "der": {
+        "part_of_speech": "article",
+        "definitions": ["bestimmter Artikel, maskulin Singular"],
+        "examples": ["Der Hund bellt"]
+    }
+}
