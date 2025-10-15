@@ -71,8 +71,13 @@ class Lexicon:
         :param word: Word to look up in the lexicon
         :return: Dictionary with part_of_speech, definitions, examples or None
         """
+        # First try lowercase
+        result = self.data.get(word.lower())
+        if result:
+            return result
+        
         # Use dictionary's get() method to fetch the word info
-        return self.data.get(word.lower(), None)
+        return self.data.get(word, None)
     
     def list_all_words(self) -> list:
         """
