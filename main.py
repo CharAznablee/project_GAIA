@@ -1,57 +1,74 @@
 """
 main.py
 --------
-Phase 3 + 3.5 Testing:
-- GAIA-0 can now save memories and reflect upon them.
-- This marks the beginning of persistent cognition and self-reflection.
-"""
+Phase 4 Testing: Autonomous Reasoning
 
+- GAIA-0 can now store facts, apply rules, and suggest consequences.
+- Interactive testing of logic system integrated with memory and reflection.
+"""
 from core.memory import MemorySystem
 from core.brain import Brain
+from core.logic import LogicSystem
 
 def main():
     """
-    Main testing routine for GAIA Phase 3 and 3.5.
-    Allows the user to record new memories and ask GAIA to reflect on them
+    Main interactive routine for Phase 4.
+
+    Users can:
+    - Add new facts
+    - Ask GAIA to reflect on memories
+    - Ask GAIA to infer logical consequences based on stored facts
     """
     
-    # Initialize GAIA's memory system
+    # Instantiate GAIA's memory system
     memory = MemorySystem()
     
-    # Initialize the reflection/brain module
+    # Instantiate GAIA's reflection system (Phase 3.5)
     brain = Brain(memory)
     
-    print("=== GAIA :: MEMORY & REFLECTION TEST ===")
-    print("Type 'reflect' to see GAIA's daily thoughts.")
-    print("Type 'recent' to see recent memories.")
-    print("Type 'exit' to quit.\n")
+    # Instantiate GAIA's logic/reasoning system (Phase 4)
+    logic = LogicSystem(memory)
+    
+    print("=== GAIA-0 :: PHASE 4 AUTONOMOUS REASONING ===")
+    print("Type 'reflect' to see reflections, 'logic' to see inferences, 'exit' to quit.\n")
     
     # Continuous Loop to interact with GAIA's memory
     while True:
-        # Ask the user for input
-        user_input = input("Enter something GAIA learned today: ").strip()
+        # Ask user to input a fact or command
+        user_input = input("Enter new Fact for GAIA: ").strip()
         
-        # Exit condition
+        # Exit the loop and program
         if user_input.lower() == "exit":
             print("Goodbye.")
             break
         
-        # Trigger reflection summary
+        # Trigger GAIA's reflection summary (Phase 3.5)
         elif user_input.lower() == "reflect":
             print("\n--- REFLECTION ---")
-            print(brain.reflect_today())
+            print(brain.reflect_today())            # Reflect on today's memories
+            print(brain.summarize_recent())         # Summarize recent memories
             print("------------------\n")
             
-        # Show recent memory log
-        elif user_input.lower() == "recent":
-            print("\n--- RECENT MEMORIES ---")
-            print(brain.summarize_recent())
-            print("-----------------------\n")
+        # Trigger GAIA's logic system to evaluate rules
+        elif user_input.lower() == "logic":
+            inferences = logic.infer_all()
+            print("\n--- LOGICAL INFERENCES ---")
             
-        # Otherwise, treat input as a new memory entry
+            
+            if not inferences:
+                print("No inferences available")
+            else:
+                # Loop over facts and their inferred consequences
+                for fact, consequences in inferences.items():
+                    print(f"Fact: {fact}")
+                    for c in consequences:
+                        print(f" -> Suggestion: {c}")
+            print("---------------------------\n")
+            
+        # Treat any other input as a new fact to store in memory
         else:
-            memory.add_memory(user_input, tags=["learning", "reflection"])
-            print("Memory saved successfully!\n")
+            memory.add_memory(user_input, tags=["fact"])
+            print("Fact stored successfully!\n")
             
 if __name__ == "__main__":
     main()

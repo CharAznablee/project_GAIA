@@ -23,6 +23,13 @@
                 "learning",
                 "test"
             ]
+        },
+        {
+            "timestamp": "2025-10-16T19:14:58",
+            "content": "it is raining",
+            "tags": [
+                "fact"
+            ]
         }
     ]
 }

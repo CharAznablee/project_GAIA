@@ -25,9 +25,7 @@ This project focuses on *machine cognition*, *self-reflection*, and *emergent un
 | **Phase 2.5** | Sentence Generation | GAIA-0 generates random and targeted sentences based on user prompts. |
 | **Phase 3** | Memory System | GAIA-0 can store, retrieve, and manage its experiences in a persistent JSON-based memory file. |
 | **Phase 3.5** | Reflection System | GAIA-0 begins to analyze and summarize its own memories — the first step toward machine self-awareness. |
-| **Phase 4** | Autonomous Reasoning | GAIA-0 starts making logical inferences and connecting internal knowledge. |
-| **Phase 4.5** | Grammar Integration | Grammar rules are stored externally in JSON and used for fully correct sentence formation. |
-| **Phase 5** | Self-Learning Expansion | GAIA-0 autonomously extends its vocabulary and grammatical understanding from structured sources. |
+| **Phase 4** | Autonomous Reasoning | GAIA-0 starts making logical inferences and connecting internal knowledge using rules and stored facts. |
 
 ---
 
@@ -40,23 +38,22 @@ This project focuses on *machine cognition*, *self-reflection*, and *emergent un
 | `core/generator.py` | Generates sentences based on known words. Supports random and targeted sentence creation (Phase 2.5). |
 | `core/memory.py` | Manages persistent memory storage. Allows GAIA-0 to save reflections and daily logs (Phase 3). |
 | `core/brain.py` | Handles reflection and self-analysis logic. Summarizes past experiences and forms simple internal narratives (Phase 3.5). |
+| `core/logic.py` | Applies logical rules to known facts to derive inferences and suggestions (Phase 4). |
 | `data/knowledge/dictionary.json` | Structured lexical data: word meanings, grammar, and examples. |
-| `data/memories.json` | Stores GAIA-0’s saved memories in JSON format. |
+| `data/memories.json` | Stores GAIA-0’s saved memories and facts. |
+| `data/rules.json` | Stores conditional rules for logical inference (`if-then` statements). |
 
 ---
 
-## Example — Phase 3 + 3.5
+## Example — Phase 4
 
-Example interaction after Phase 3.5 setup:
---- MEMORY TEST ---
-Enter something GAIA learned today: GAIA learned how to store memories.
-Memory saved successfully!
+Enter new fact for GAIA: It is raining
+Fact stored successfully!
 
---- REFLECTION TEST ---
-Reflection: I learned one thing today.
-Recent reflections:
-
-- GAIA learned how to store memories. (2025-10-16T14:22:10)
+Enter 'logic' to see GAIA's inferences:
+--- LOGICAL INFERENCES ---
+Fact: It is raining
+→ Suggestion: Take an umbrella
 
 ---
 
