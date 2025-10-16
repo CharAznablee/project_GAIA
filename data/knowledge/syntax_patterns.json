@@ -1,0 +1,72 @@
+{
+  "patterns": [
+    {
+      "name": "article_noun_verb",
+      "sequence": ["article", "noun", "verb"]
+    },
+    {
+      "name": "article_noun_verb_noun",
+      "sequence": ["article", "noun", "verb", "noun"]
+    },
+    {
+      "name": "article_noun_verb_adjective",
+      "sequence": ["article", "noun", "verb", "adjective"]
+    },
+    {
+      "name": "article_noun_verb_adverb",
+      "sequence": ["article", "noun", "verb", "adverb"]
+    },
+    {
+      "name": "article_noun_to_be_forms_verb_ing",
+      "sequence": ["article", "noun", "to_be_forms", "verb_ing"]
+    },
+    {
+      "name": "article_noun_to_be_forms_verb_ing_adverb",
+      "sequence": ["article", "noun", "to_be_forms", "verb_ing", "adverb"]
+    },
+    {
+      "name": "pronoun_verb",
+      "sequence": ["pronoun", "verb"]
+    },
+    {
+      "name": "pronoun_verb_noun",
+      "sequence": ["pronoun", "verb", "noun"]
+    },
+    {
+      "name": "pronoun_to_be_forms_verb_ing",
+      "sequence": ["pronoun", "to_be_forms", "verb_ing"]
+    },
+    {
+      "name": "pronoun_to_be_forms_verb_ing_adverb",
+      "sequence": ["pronoun", "to_be_forms", "verb_ing", "adverb"]
+    },
+    {
+      "name": "noun_verb",
+      "sequence": ["noun", "verb"]
+    },
+    {
+      "name": "noun_verb_noun",
+      "sequence": ["noun", "verb", "noun"]
+    },
+    {
+      "name": "noun_verb_adjective",
+      "sequence": ["noun", "verb", "adjective"]
+    },
+    {
+      "name": "noun_verb_adverb",
+      "sequence": ["noun", "verb", "adverb"]
+    },
+    {
+      "name": "article_noun_verb_adjective_noun",
+      "sequence": ["article", "noun", "verb", "adjective", "noun"]
+    },
+    {
+      "name": "pronoun_verb_adjective",
+      "sequence": ["pronoun", "verb", "adjective"]
+    },
+    {
+      "name": "pronoun_verb_adverb",
+      "sequence": ["pronoun", "verb", "adverb"]
+    }
+  ]
+}

@@ -1,70 +1,65 @@
 """
 grammar.py
 ----------
-Handles basic sentence structure analysis for GAIA-0.
+GAIA-0 Phase 4.5 Grammar System
 
-Phase 1.5: Identify simple sentence components (Subject, Verb, Object)
+Responsibilities:
+- Validate sentence structures based on syntax_patterns.json
+- Provide grammar hints from grammar_rules.json
+- Integrate with Lexicon for POS info
+- Support flexible endings (optional adjectives/adverbs)
 """
 
 from core.parser import Lexicon
 
-class Grammar:
-    """
-    Grammar class analyzes simple sentence structures using a given Lexicon.
-    """
-    def __init__(self, lexicon: Lexicon):
-        """
-        Constructor: receives an instance of Lexicon to access word information.
-        """
-        # Store the reference to Lexicon instance to query word info
-        self.lexicon = lexicon
-        
-    def parse_sentence(self, sentence: str) -> dict:
-        """
-        Parse a simple sentence and try to identify Subject, Verb, and Object.
+class GrammarSystem:
+    def __init__(self):
+        self.lexicon = Lexicon()
+        # Load grammar rules (for hints)
+        self.grammar_rules = self.lexicon._load_json_safely(
+            "data/knowledge/grammar_rules.json"
+        ).get("rules", {})
+        # Load syntax patterns
+        self.syntax_patterns = self.lexicon.syntax_patterns.get("patterns", [])
 
-        Steps:
-        1. Split the sentence into words (tokens)
-        2. Identify the part of speech of each word
-        3. Assign the first noun as Subject
-        4. Assign the first verb as Verb
-        5. Assign the next noun as Object (if exists)
+    def get_pos(self, word, tokens=None, index=None):
+        """Return the POS type of a word using Lexicon"""
+        info = self.lexicon.get_word_pos(word, context_tokens=tokens, index=index)
+        if info:
+            return info.get("type", "unknown")
+        return "unknown"
 
-        :param sentence: Input sentence as a string
-        :return: Dictionary with 'subject', 'verb', 'object' keys
+    def validate_syntax(self, pos_tokens):
         """
-        # Split the sentece into a list of words
-        tokens =  sentence.strip().lower().split()
-        # Initialize variables to store identified components
-        subject = None
-        verb = None
-        obj = None
-        
-        # Loop through each word token in sentence
-        for token in tokens:
-            # Get word information from Lexicon
-            info = self.lexicon.get_word_info(token)
-            # Skip the token if it is unknown in the dictionary
-            if not info:
-                continue # Skip unknown words
-            
-            # Retrieve the part of speech (POS) of the current word
-            pos = info['part_of_speech']
-            
-            # Assign the first noun found as Subject
-            if pos == 'noun' and subject is None:
-                subject = token
-            # Assign the first verb found as verb
-            elif pos == 'verb' and verb is None:
-                verb = token
-            # Assign the next noun after Subject and Verb as Object
-            elif pos == 'noun' and subject is not None and verb is not None and obj is None:
-                obj = token
-        
-        # Return the analysis as a dictionary
-        return {
-            'subject': subject,
-            'verb': verb,
-            'object': obj
-        }
-        
+        pos_tokens: list of tuples (word, pos)
+        Compare POS sequence against known syntax patterns
+        Supports flexible endings (extra adjectives/adverbs at the end)
+        """
+        pos_sequence = [p for _, p in pos_tokens]
+        matched = False
+
+        for pattern in self.syntax_patterns:
+            pattern_seq = pattern["sequence"]
+            # Check if pos_sequence starts with pattern_seq
+            if pos_sequence[:len(pattern_seq)] == pattern_seq:
+                print(f"[INFO] Syntax pattern matched: {pattern['name']}")
+                matched = True
+
+        if not matched:
+            print("[INFO] No syntax pattern matched.")
+
+    def get_grammar_hint(self, word):
+        """
+        Return a human-readable grammar hint for a word
+        """
+        # Normalize word to lower for dictionary lookup
+        key = word.lower()
+        # Check exact matches first
+        if key in self.grammar_rules:
+            return self.grammar_rules[key]
+        # Otherwise, check by POS
+        pos_info = self.lexicon.get_word_pos(word)
+        if pos_info:
+            pos_type = pos_info.get("type")
+            return self.grammar_rules.get(pos_type, "No specific grammar rule found.")
+        return "No specific grammar rule found."

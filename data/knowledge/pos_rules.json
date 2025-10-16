@@ -1,0 +1,24 @@
+{
+  "article": {
+    "words": ["the", "a", "an"]
+  },
+  "noun": {
+    "suffixes": ["tion", "ment", "ness", "ity", "er", "or", "ist"],
+    "words": ["cat", "dog", "person", "apple"]
+  },
+  "verb": {
+    "suffixes": ["ing", "ed", "ize", "fy"],
+    "words": ["run", "is", "are", "be", "have", "do"]
+  },
+  "adjective": {
+    "suffixes": ["ous", "ful", "able", "al", "ive", "less", "ic"],
+    "words": ["happy", "fast", "red"]
+  },
+  "adverb": {
+    "suffixes": ["ly"],
+    "words": ["quickly", "slowly"]
+  },
+  "pronoun": {
+    "words": ["i", "you", "he", "she", "it", "we", "they"]
+  }
+}

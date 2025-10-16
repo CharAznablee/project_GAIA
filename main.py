@@ -1,74 +1,78 @@
 """
 main.py
 --------
-Phase 4 Testing: Autonomous Reasoning
+Phase 4.5 – External Dictionary Integration + POS & Syntax Testing
 
-- GAIA-0 can now store facts, apply rules, and suggest consequences.
-- Interactive testing of logic system integrated with memory and reflection.
+GAIA-0 now uses external JSON dictionaries to:
+- Identify words (from a large JSON dictionary file)
+- Detect parts of speech (using pos_rules.json)
+- Validate simple sentence structures (using syntax_patterns.json)
+- Retrieve grammar hints (using grammar_rules.json)
+
+This marks GAIA’s transition from raw word recognition (Phase 1–3)
+to structured grammatical understanding.
 """
-from core.memory import MemorySystem
-from core.brain import Brain
-from core.logic import LogicSystem
+
+import json
+from core.parser import Lexicon
+from core.grammar import GrammarSystem
+
 
 def main():
     """
-    Main interactive routine for Phase 4.
-
-    Users can:
-    - Add new facts
-    - Ask GAIA to reflect on memories
-    - Ask GAIA to infer logical consequences based on stored facts
+    Interactive test for Phase 4.5.
+    Allows the user to enter sentences and see how GAIA parses and classifies them.
     """
-    
-    # Instantiate GAIA's memory system
-    memory = MemorySystem()
-    
-    # Instantiate GAIA's reflection system (Phase 3.5)
-    brain = Brain(memory)
-    
-    # Instantiate GAIA's logic/reasoning system (Phase 4)
-    logic = LogicSystem(memory)
-    
-    print("=== GAIA-0 :: PHASE 4 AUTONOMOUS REASONING ===")
-    print("Type 'reflect' to see reflections, 'logic' to see inferences, 'exit' to quit.\n")
-    
-    # Continuous Loop to interact with GAIA's memory
+
+    print("=== GAIA :: PHASE 4.5 TEST ===")
+    print("GAIA now uses external dictionaries for grammar and syntax.")
+    print("Type a sentence to analyze, or 'exit' to quit.\n")
+
+    # Initialize core systems
+    parser = Lexicon()
+    grammar = GrammarSystem()
+
     while True:
-        # Ask user to input a fact or command
-        user_input = input("Enter new Fact for GAIA: ").strip()
-        
-        # Exit the loop and program
+        user_input = input("Enter a sentence: ").strip()
+
         if user_input.lower() == "exit":
-            print("Goodbye.")
+            print("Exiting GAIA test environment. Goodbye.")
             break
+
+        # --- 1️ PARSE SENTENCE ---
+        tokens = parser.parse_sentence(user_input)
+        print("\n[1] Tokenized Sentence:")
+        print(tokens)
+
+        # --- 2️ POS DETECTION ---
+        print("\n[2] Detected Parts of Speech:")
+        pos_tokens = []
+        for word in tokens:
+            pos = grammar.get_pos(word)
+            pos_tokens.append((word, pos))
+            print(f"  {word:<15} → {pos}")
+
+        # --- 3️ SYNTAX VALIDATION ---
+        print("\n[3] Syntax Validation:")
+        grammar.validate_syntax(pos_tokens)
+
+        # --- 4️ GRAMMAR HINTS ---
+        print("\n[4] Grammar Hints:")
+        for word in tokens:
+            hint = grammar.get_grammar_hint(word)
+            print(f"  {word:<15} → {hint}")
+
+        print("\n-----------------------------------------\n")
         
-        # Trigger GAIA's reflection summary (Phase 3.5)
-        elif user_input.lower() == "reflect":
-            print("\n--- REFLECTION ---")
-            print(brain.reflect_today())            # Reflect on today's memories
-            print(brain.summarize_recent())         # Summarize recent memories
-            print("------------------\n")
+        for index, word in enumerate(tokens):
+            pos_info = parser.get_word_pos(word, context_tokens=tokens, index=index)
+            pos_type = pos_info["type"]
             
-        # Trigger GAIA's logic system to evaluate rules
-        elif user_input.lower() == "logic":
-            inferences = logic.infer_all()
-            print("\n--- LOGICAL INFERENCES ---")
+            # Speichern in learned_words.json
+            parser.learn_word(word, pos_type, confidence=pos_info.get("confidence", 0.8))
             
-            
-            if not inferences:
-                print("No inferences available")
-            else:
-                # Loop over facts and their inferred consequences
-                for fact, consequences in inferences.items():
-                    print(f"Fact: {fact}")
-                    for c in consequences:
-                        print(f" -> Suggestion: {c}")
-            print("---------------------------\n")
-            
-        # Treat any other input as a new fact to store in memory
-        else:
-            memory.add_memory(user_input, tags=["fact"])
-            print("Fact stored successfully!\n")
-            
+            pos_tokens.append((word, pos_type))
+
+
 if __name__ == "__main__":
     main()

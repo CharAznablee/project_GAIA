@@ -1,93 +1,148 @@
 """
 parser.py
------------
-Loads GAIA's lexical data and provides access to word information.
+---------
+GAIA-0 Phase 4.5 Lexicon + POS Detection
 
-This is the core of Phase 1: word understanding.
-
-Each word is stored in a JSON file with:
-    - part_of_speech: word type (noun,verb etc.)
-    - definitions: list of meanings
-    - examples: example sentences
+Responsibilities:
+- Load multiple lexical sources:
+    - structured dictionary.json
+    - large external wordlist (dwyl format)
+    - learned_words.json (GAIA's personal POS store)
+- Provide methods for:
+    - Tokenizing sentences
+    - Detecting POS for each token using lexicon + heuristics
 """
 
-# Import the JSON module to read JSON files
 import json
-# Import Path from pathlib to handle file paths across different platforms
 from pathlib import Path
+from typing import List, Optional, Dict, Any
 
 class Lexicon:
-    """
-    Lexicon class manages GAIA's dictionary.
-    It can load the dictionary, retrieve word information,
-    and list all known words.
-    """
-    def __init__(self, dictionary_path: str):
+    def __init__(self,
+                 dictionary_path="data/knowledge/dictionary.json",
+                 external_wordlist_path="data/knowledge/words_dictionary.json",
+                 pos_rules_path="data/knowledge/pos_rules.json",
+                 syntax_patterns_path="data/knowledge/syntax_patterns.json",
+                 learned_words_path="data/knowledge/learned_words.json"):
         """
-        Constructor: initializes the Lexicon instance
-        
-        Steps:
-            1. Converts the input string path to a Path object (Platform-independent)
-            2. Loads the dictionary into self.data
-        
-        :param dictionary.path: Path to the JSON file containing lexical data.
+        Initialize Lexicon and load all JSON resources
         """
-        # Store the path to the JSON dictionary
         self.dictionary_path = Path(dictionary_path)
-        # Load the dictionary data into memory as a Python dictionary
-        self.data = self.load_dictionary()
-        
-    def load_dictionary(self) -> dict:
-        """
-        Loads the JSON dictionary into memory.
+        self.external_wordlist_path = Path(external_wordlist_path)
+        self.pos_rules_path = Path(pos_rules_path)
+        self.syntax_patterns_path = Path(syntax_patterns_path)
+        self.learned_words_path = Path(learned_words_path)
 
-        Steps:
-        1. Check if the file exists, otherwise raise an error
-        2. Open the file in read mode with UTF-8 encoding
-        3. Convert JSON content into a Python dictionary
-        4. Return the dictionary
+        self.data: Dict[str, Any] = {}            # structured dictionary
+        self.external_words: Dict[str, Any] = {}  # external wordlist
+        self.pos_rules: Dict[str, Any] = {}       # POS heuristics
+        self.syntax_patterns: Dict[str, Any] = {} # sentence patterns
+        self.learned_words: Dict[str, Any] = {}   # GAIA's learned POS
 
-        :return: Dictionary containing all words and their properties
+        self.load_all_resources()
+
+    def load_all_resources(self):
         """
-        # Check if the file exists
-        if not self.dictionary_path.exists():
-            # Raise an error if the file is not found
-            raise FileNotFoundError(f"Dictionary not found at {self.dictionary_path}")
+        Load all JSON resources, missing files handled gracefully
+        """
+        self.data = self._load_json_safely(self.dictionary_path) or {}
+        self.external_words = self._load_json_safely(self.external_wordlist_path) or {}
+        self.pos_rules = self._load_json_safely(self.pos_rules_path) or {}
+        self.syntax_patterns = self._load_json_safely(self.syntax_patterns_path) or {}
+        self.learned_words = self._load_json_safely(self.learned_words_path) or {}
+
+    def _load_json_safely(self, path) -> Optional[dict]:
+        """Allow both str and Path objects."""
+        path = Path(path)  # <-- konvertiere sicher
+        if not path.exists():
+            print(f"[Lexicon] Warning: JSON file not found: {path}")
+            return None
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"[Lexicon] Error loading JSON {path}: {e}")
+            return None
+
+    def save_learned_words(self):
+        """Save GAIA's learned words"""
+        try:
+            self.learned_words_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(self.learned_words_path, "w", encoding="utf-8") as f:
+                json.dump(self.learned_words, f, indent=2, ensure_ascii=False)
+        except Exception as e:
+            print(f"[Lexicon] Error saving learned words: {e}")
             
-        # Open the JSON file in read mode "r" with UTF-8 encoding
-        with open(self.dictionary_path, "r", encoding="utf-8") as file:
-            # Load JSON content into a Python dictionary and return it
-            return json.load(file)
-        
-    def get_word_info(self, word: str) -> dict:
+    def learn_word(self, word: str, pos: str, confidence: float = 0.8):
         """
-        Retrieves all information about a given word.
-
-        Steps:
-        1. Converts the input word to lowercase (case-insensitive search)
-        2. Checks if the word exists in the dictionary
-        3. Returns the word data or None if unknown
-
-        :param word: Word to look up in the lexicon
-        :return: Dictionary with part_of_speech, definitions, examples or None
+        Store a learned POS for a word in learned_words.json.
+        If the word exists already, update confidence by averaging.
         """
-        # First try lowercase
-        result = self.data.get(word.lower())
-        if result:
-            return result
-        
-        # Use dictionary's get() method to fetch the word info
-        return self.data.get(word, None)
+        key = word.lower()
+        existing = self.learned_words.get(key)
+        if existing:
+            existing_conf = existing.get("confidence", 0.5)
+            new_conf = (existing_conf + confidence) / 2
+            existing["confidence"] = new_conf
+            existing["type"] = pos
+        else:
+            self.learned_words[key] = {"type": pos, "confidence": confidence}
     
-    def list_all_words(self) -> list:
-        """
-        Returns a list of all known words in the lexicon.
+        # Persist to disk
+        self.save_learned_words()
 
-        Steps:
-        1. Retrieve all dictionary keys (all words)
-        2. Return them as a list
+    # ----------------------------
+    # Sentence parsing & POS
+    # ----------------------------
+    def parse_sentence(self, sentence: str) -> List[str]:
+        """Tokenize a sentence (simple space-split)"""
+        return sentence.strip().split()
 
-        :return: List of all words as strings
+    def get_word_pos(self, word: str, context_tokens: Optional[List[str]] = None, index: Optional[int] = None) -> Optional[Dict[str, Any]]:
         """
-        return list(self.data.keys())
-    
+        Determine POS for a word using:
+        learned_words -> dictionary -> pos_rules -> context heuristics -> external wordlist
+        """
+        key = word.lower()
+
+        # 1) learned words
+        if key in self.learned_words:
+            info = dict(self.learned_words[key])
+            info["type"] = info.get("type", info.get("part_of_speech", "unknown"))
+            return info
+
+        # 2) structured dictionary
+        if key in self.data:
+            entry = dict(self.data[key])
+            entry["type"] = entry.get("type") or entry.get("part_of_speech") or "unknown"
+            return {"type": entry["type"], "confidence": 0.95, "source": "dictionary"}
+
+        # 3) heuristic POS
+        heuristic = self.detect_pos_via_rules(key)
+        if heuristic:
+            return {"type": heuristic, "confidence": 0.6, "source": "heuristic"}
+
+        # 4) external wordlist fallback
+        if key in self.external_words:
+            return {"type": "unknown", "confidence": 0.3, "exists": True, "source": "external_wordlist"}
+
+        # completely unknown
+        return {"type": "unknown", "confidence": 0.0}
+
+    def detect_pos_via_rules(self, word: str) -> Optional[str]:
+        """Detect POS using pos_rules.json heuristics"""
+        w = word.lower()
+        for pos_name, cfg in self.pos_rules.items():
+            # check word lists
+            for wlist_word in cfg.get("words", []):
+                if w == wlist_word.lower():
+                    return pos_name
+            # check suffixes
+            for suffix in cfg.get("suffixes", []):
+                if w.endswith(suffix.lower()):
+                    return pos_name
+            # check prefixes
+            for prefix in cfg.get("prefixes", []):
+                if w.startswith(prefix.lower()):
+                    return pos_name
+        return None

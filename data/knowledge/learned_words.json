@@ -1,0 +1,18 @@
+{
+  "the": {
+    "type": "article",
+    "confidence": 0.6
+  },
+  "cat": {
+    "type": "noun",
+    "confidence": 0.6
+  },
+  "is": {
+    "type": "verb",
+    "confidence": 0.6
+  },
+  "running": {
+    "type": "verb",
+    "confidence": 0.6
+  }
+}

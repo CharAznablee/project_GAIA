@@ -1,0 +1,12 @@
+{
+  "rules": {
+    "noun": "Usually represents a person, place, or thing. Examples: cat, dog, apple.",
+    "verb": "Describes an action or state of being. Examples: run, eat, jump.",
+    "verb_ing": "Present participle form of a verb, describing ongoing action. Examples: running, eating.",
+    "to_be_forms": "Forms of the verb 'to be', describing states. Examples: is, am, are, was, were.",
+    "adjective": "Describes qualities or properties of nouns. Examples: happy, red, fast.",
+    "adverb": "Describes how, when, or where something happens. Examples: quickly, slowly.",
+    "article": "Precedes a noun and defines its definiteness. Examples: a, an, the.",
+    "pronoun": "Replaces a noun in a sentence. Examples: I, you, he, she, it."
+  }
+}

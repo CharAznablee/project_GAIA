@@ -20,12 +20,13 @@ This project focuses on *machine cognition*, *self-reflection*, and *emergent un
 | Phase | Focus | Description |
 |-------|--------|-------------|
 | **Phase 1** | Lexical Understanding | GAIA-0 learns individual words, their meanings, and grammatical categories from structured JSON data. |
-| **Phase 1.5** | Sentence Parsing | GAIA-0 recognizes subjects, verbs, and objects in simple input sentences. |
-| **Phase 2** | Syntax Recognition | The system learns how words form basic SVO (subject–verb–object) patterns. |
-| **Phase 2.5** | Sentence Generation | GAIA-0 generates random and targeted sentences based on user prompts. |
-| **Phase 3** | Memory System | GAIA-0 can store, retrieve, and manage its experiences in a persistent JSON-based memory file. |
-| **Phase 3.5** | Reflection System | GAIA-0 begins to analyze and summarize its own memories — the first step toward machine self-awareness. |
-| **Phase 4** | Autonomous Reasoning | GAIA-0 starts making logical inferences and connecting internal knowledge using rules and stored facts. |
+| **Phase 1.5** | Sentence Testing | Simple Subject–Verb–Object sentences are tested and recognized. |
+| **Phase 2** | Syntax Recognition | The system learns how words form simple sentences (SVO). |
+| **Phase 2.5** | Extended Syntax | Additional sentence structures and grammar hints are integrated. |
+| **Phase 3** | Memory & Reflection | Daily memory logs and internal reflection mechanisms are introduced. |
+| **Phase 3.5** | Enhanced Memory Testing | Memory storage, recall, and reflection are tested with user prompts. |
+| **Phase 4** | Autonomous Reasoning | GAIA-0 starts making logical inferences and connecting internal knowledge. |
+| **Phase 4.5** | External Dictionary Integration | GAIA-0 uses large external JSON word lists and grammar rules to detect POS, validate syntax, and learn words automatically. |
 
 ---
 
@@ -33,27 +34,15 @@ This project focuses on *machine cognition*, *self-reflection*, and *emergent un
 
 | File | Description |
 |------|--------------|
-| `core/parser.py` | Loads and manages the word database (`dictionary.json`). Enables GAIA-0 to understand lexical properties. |
-| `core/grammar.py` | Interprets sentence structure and grammatical roles. |
-| `core/generator.py` | Generates sentences based on known words. Supports random and targeted sentence creation (Phase 2.5). |
-| `core/memory.py` | Manages persistent memory storage. Allows GAIA-0 to save reflections and daily logs (Phase 3). |
-| `core/brain.py` | Handles reflection and self-analysis logic. Summarizes past experiences and forms simple internal narratives (Phase 3.5). |
-| `core/logic.py` | Applies logical rules to known facts to derive inferences and suggestions (Phase 4). |
+| `core/parser.py` | Lexicon system: loads local & external dictionaries, POS rules, syntax patterns, and manages learned words. |
+| `core/grammar.py` | Grammar system: validates sentence structures, provides grammar hints, integrates with Lexicon. |
+| `core/brain.py` | Core cognitive loop (Phase 3+). Handles internal states, thoughts, and reflection. |
 | `data/knowledge/dictionary.json` | Structured lexical data: word meanings, grammar, and examples. |
-| `data/memories.json` | Stores GAIA-0’s saved memories and facts. |
-| `data/rules.json` | Stores conditional rules for logical inference (`if-then` statements). |
-
----
-
-## Example — Phase 4
-
-Enter new fact for GAIA: It is raining
-Fact stored successfully!
-
-Enter 'logic' to see GAIA's inferences:
---- LOGICAL INFERENCES ---
-Fact: It is raining
-→ Suggestion: Take an umbrella
+| `data/knowledge/words_dictionary.json` | Large English wordlist (dwyl format). |
+| `data/knowledge/pos_rules.json` | POS detection heuristics (suffixes, prefixes, word lists). |
+| `data/knowledge/syntax_patterns.json` | Sentence structures for syntax validation. |
+| `data/knowledge/grammar_rules.json` | Human-readable grammar hints for each POS. |
+| `data/knowledge/learned_words.json` | GAIA-0’s personal lexicon of learned words and POS. |
 
 ---
 
@@ -62,15 +51,42 @@ Fact: It is raining
 - Develop a **self-expanding knowledge system** based entirely on structured data.  
 - Build an **interpretable AI** capable of explaining its reasoning process.  
 - Explore **emergent machine consciousness** through iterative learning and reflection.  
-- Maintain **LLM-free operation** for full transparency and autonomy.
+- Maintain **LLM-free operation** for full transparency and autonomy.  
+- Use **external dictionaries** to accelerate learning and POS detection.
+
+---
+
+## Example – Phase 4.5
+
+Example interaction:
+
+Enter a sentence: The Cat is running
+
+[1] Tokenized Sentence:
+['The', 'Cat', 'is', 'running']
+
+[2] Detected Parts of Speech:
+The → article
+Cat → noun
+is → to_be_forms
+running → verb_ing
+
+[3] Syntax Validation:
+[INFO] Syntax pattern matched: article_noun_is_verb_ing
+
+[4] Grammar Hints:
+The → Precedes a noun and defines its definiteness. Examples: a, an, the.
+Cat → Usually represents a person, place, or thing. Examples: cat, dog, apple.
+is → Forms of the verb 'to be', describing states. Examples: is, am, are, was, were.
+running → Present participle form of a verb, describing ongoing action. Examples: running, eating.
 
 ---
 
 ## Requirements
 
 - Python 3.10 or higher  
-- No external dependencies in early phases  
-- All knowledge and memories stored locally in JSON format  
+- No external dependencies in Phase 1–4.5  
+- All knowledge stored locally in JSON format  
 
 ---
 
