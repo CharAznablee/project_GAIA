@@ -1,47 +1,57 @@
 """
 main.py
 --------
-Phase 2.5: Targeted sentence generation test.
+Phase 3 + 3.5 Testing:
+- GAIA-0 can now save memories and reflect upon them.
+- This marks the beginning of persistent cognition and self-reflection.
 """
-# Import the Lexicon class from core/parser.py
-from core.parser import Lexicon
 
-# Import the grammar class from core/grammar.py
-from core.grammar import Grammar
+from core.memory import MemorySystem
+from core.brain import Brain
 
-# Import the SentenceGenerator class from core/generator.py
-from core.generator import SentenceGenerator
-
-# Initialize the Lexicon with the path to dictionary.json
-lexicon = Lexicon("data/knowledge/dictionary.json")
-
-# Initialize Grammar with the Lexicon instance
-grammar = Grammar(lexicon)
-
-# Initialize the SentenceGenerator for Phase 2
-generator = SentenceGenerator(lexicon)
-
-print("\n--- Phase 2.5: Targeted Sentence Generation ---")
-
-while True:
-    print("\nOptions:")
-    print("1 - Generate random sentence")
-    print("2 - Generate sentence with specific subject")
-    print("3 - Generate sentence with specific verb")
-    print("exit - Quit program")
+def main():
+    """
+    Main testing routine for GAIA Phase 3 and 3.5.
+    Allows the user to record new memories and ask GAIA to reflect on them
+    """
     
-    user_input = input("\nSelect an option: ").strip().lower()
+    # Initialize GAIA's memory system
+    memory = MemorySystem()
     
-    if user_input == "exit":
-        print("Exiting GAIA Sentence Generator.")
-        break
-    elif user_input == "1":
-        print("GAIA says:", generator.generate_sentence())
-    elif user_input == "2":
-        subject = input("Enter a subject (noun): ").strip()
-        print("GAIA says:", generator.generate_with_subject(subject))
-    elif user_input == "3":
-        verb = input("Enter a verb: ").strip()
-        print("GAIA says:", generator.generate_with_verb(verb))
-    else:
-        print("Invalid option. Please choose 1, 2, 3, or exit.")
+    # Initialize the reflection/brain module
+    brain = Brain(memory)
+    
+    print("=== GAIA :: MEMORY & REFLECTION TEST ===")
+    print("Type 'reflect' to see GAIA's daily thoughts.")
+    print("Type 'recent' to see recent memories.")
+    print("Type 'exit' to quit.\n")
+    
+    # Continuous Loop to interact with GAIA's memory
+    while True:
+        # Ask the user for input
+        user_input = input("Enter something GAIA learned today: ").strip()
+        
+        # Exit condition
+        if user_input.lower() == "exit":
+            print("Goodbye.")
+            break
+        
+        # Trigger reflection summary
+        elif user_input.lower() == "reflect":
+            print("\n--- REFLECTION ---")
+            print(brain.reflect_today())
+            print("------------------\n")
+            
+        # Show recent memory log
+        elif user_input.lower() == "recent":
+            print("\n--- RECENT MEMORIES ---")
+            print(brain.summarize_recent())
+            print("-----------------------\n")
+            
+        # Otherwise, treat input as a new memory entry
+        else:
+            memory.add_memory(user_input, tags=["learning", "reflection"])
+            print("Memory saved successfully!\n")
+            
+if __name__ == "__main__":
+    main()
