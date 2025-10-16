@@ -1,0 +1,14 @@
+[
+    {
+        "condition": "It is raining",
+        "consequence": "Take an umbrella"
+    },
+    {
+        "condition": "The cat is hungry",
+        "consequence": "Feed the cat"
+    },
+    {
+        "condition": "GAIA learned new words",
+        "consequence": "Update vocabulary database"
+    }
+]

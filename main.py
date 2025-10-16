@@ -1,62 +1,74 @@
 """
 main.py
 --------
-Phase 1.5: Sentence parsing and SVO (Subject-Verb-Object) analysis
+Phase 4 Testing: Autonomous Reasoning
 
-- GAIA-0 analyzes simple sentences to identify Subject, Verb, and Object
-- Includes predefined test sentences for automatic demonstration
-- Also allows interactive sentence input
-- Warns if words are not found in the dictionary
+- GAIA-0 can now store facts, apply rules, and suggest consequences.
+- Interactive testing of logic system integrated with memory and reflection.
 """
+from core.memory import MemorySystem
+from core.brain import Brain
+from core.logic import LogicSystem
 
-# Import the Lexicon class from core/parser.py
-from core.parser import Lexicon
+def main():
+    """
+    Main interactive routine for Phase 4.
 
-# Import the grammar class from core/grammar.py
-from core.grammar import Grammar
-
-# Initialize the Lexicon with the path to dictionary.json
-lexicon = Lexicon("data/knowledge/dictionary.json")
-
-# Initialize Grammar with the Lexicon instance
-grammar = Grammar(lexicon)
-
-# ---- Predefined test sentences for Phase 1.5 ----
-test_sentences = [
-    "Katze laufen Maus",
-    "Hund fressen Wurst",
-    "Vogel fliegen Baum"
-]
-
-print("\n--- Test Sentences ---")
-for s in test_sentences:
-    # Parse the sentence using Grammar
-    analysis = grammar.parse_sentence(s)
-    # Display the analysis result
-    print(f"Sentence: '{s}' -> {analysis}")
-print("--- End of tests ---\n")
-
-# --- Interactive Loop for user input ---
-while True:
-    # Ask the user for a sentence
-    sentence = input("Enter a sentence for GAIA to analyze (or 'exit' to quit): ").strip()
+    Users can:
+    - Add new facts
+    - Ask GAIA to reflect on memories
+    - Ask GAIA to infer logical consequences based on stored facts
+    """
     
-    # Exit condition
-    if sentence.lower() == "exit":
-        break
+    # Instantiate GAIA's memory system
+    memory = MemorySystem()
     
-    # --- Small error handling: warn about unknown words ---
-    for token in sentence.strip().split():
-        info = lexicon.get_word_info(token.lower())
-        if not info:
-            print(f"Warning: '{token}' not found in dictionary")
-            continue
+    # Instantiate GAIA's reflection system (Phase 3.5)
+    brain = Brain(memory)
     
-    # Parse the sentence to identify Subject, Verb, Object
-    analysis = grammar.parse_sentence(sentence)
+    # Instantiate GAIA's logic/reasoning system (Phase 4)
+    logic = LogicSystem(memory)
     
-    # Display results
-    print("\nGAIA Sentence Analysis:")
-    print(f"Subject: {analysis['subject']}")
-    print(f"Verb: {analysis['verb']}")
-    print(f"Object: {analysis['object']}")
+    print("=== GAIA-0 :: PHASE 4 AUTONOMOUS REASONING ===")
+    print("Type 'reflect' to see reflections, 'logic' to see inferences, 'exit' to quit.\n")
+    
+    # Continuous Loop to interact with GAIA's memory
+    while True:
+        # Ask user to input a fact or command
+        user_input = input("Enter new Fact for GAIA: ").strip()
+        
+        # Exit the loop and program
+        if user_input.lower() == "exit":
+            print("Goodbye.")
+            break
+        
+        # Trigger GAIA's reflection summary (Phase 3.5)
+        elif user_input.lower() == "reflect":
+            print("\n--- REFLECTION ---")
+            print(brain.reflect_today())            # Reflect on today's memories
+            print(brain.summarize_recent())         # Summarize recent memories
+            print("------------------\n")
+            
+        # Trigger GAIA's logic system to evaluate rules
+        elif user_input.lower() == "logic":
+            inferences = logic.infer_all()
+            print("\n--- LOGICAL INFERENCES ---")
+            
+            
+            if not inferences:
+                print("No inferences available")
+            else:
+                # Loop over facts and their inferred consequences
+                for fact, consequences in inferences.items():
+                    print(f"Fact: {fact}")
+                    for c in consequences:
+                        print(f" -> Suggestion: {c}")
+            print("---------------------------\n")
+            
+        # Treat any other input as a new fact to store in memory
+        else:
+            memory.add_memory(user_input, tags=["fact"])
+            print("Fact stored successfully!\n")
+            
+if __name__ == "__main__":
+    main()

@@ -20,9 +20,12 @@ This project focuses on *machine cognition*, *self-reflection*, and *emergent un
 | Phase | Focus | Description |
 |-------|--------|-------------|
 | **Phase 1** | Lexical Understanding | GAIA-0 learns individual words, their meanings, and grammatical categories from structured JSON data. |
-| **Phase 2** | Syntax Recognition | The system learns how words form simple sentences (subject–verb–object). |
-| **Phase 3** | Memory and Reflection | Daily memory logs and internal reflection mechanisms are introduced. |
-| **Phase 4** | Autonomous Reasoning | GAIA-0 begins to infer, predict, and question information based on internal logic. |
+| **Phase 1.5** | Sentence Parsing | GAIA-0 recognizes subjects, verbs, and objects in simple input sentences. |
+| **Phase 2** | Syntax Recognition | The system learns how words form basic SVO (subject–verb–object) patterns. |
+| **Phase 2.5** | Sentence Generation | GAIA-0 generates random and targeted sentences based on user prompts. |
+| **Phase 3** | Memory System | GAIA-0 can store, retrieve, and manage its experiences in a persistent JSON-based memory file. |
+| **Phase 3.5** | Reflection System | GAIA-0 begins to analyze and summarize its own memories — the first step toward machine self-awareness. |
+| **Phase 4** | Autonomous Reasoning | GAIA-0 starts making logical inferences and connecting internal knowledge using rules and stored facts. |
 
 ---
 
@@ -32,8 +35,25 @@ This project focuses on *machine cognition*, *self-reflection*, and *emergent un
 |------|--------------|
 | `core/parser.py` | Loads and manages the word database (`dictionary.json`). Enables GAIA-0 to understand lexical properties. |
 | `core/grammar.py` | Interprets sentence structure and grammatical roles. |
-| `core/brain.py` | Core cognitive loop (planned for Phase 3+). Handles internal states, thoughts, and reflection. |
+| `core/generator.py` | Generates sentences based on known words. Supports random and targeted sentence creation (Phase 2.5). |
+| `core/memory.py` | Manages persistent memory storage. Allows GAIA-0 to save reflections and daily logs (Phase 3). |
+| `core/brain.py` | Handles reflection and self-analysis logic. Summarizes past experiences and forms simple internal narratives (Phase 3.5). |
+| `core/logic.py` | Applies logical rules to known facts to derive inferences and suggestions (Phase 4). |
 | `data/knowledge/dictionary.json` | Structured lexical data: word meanings, grammar, and examples. |
+| `data/memories.json` | Stores GAIA-0’s saved memories and facts. |
+| `data/rules.json` | Stores conditional rules for logical inference (`if-then` statements). |
+
+---
+
+## Example — Phase 4
+
+Enter new fact for GAIA: It is raining
+Fact stored successfully!
+
+Enter 'logic' to see GAIA's inferences:
+--- LOGICAL INFERENCES ---
+Fact: It is raining
+→ Suggestion: Take an umbrella
 
 ---
 
@@ -46,30 +66,11 @@ This project focuses on *machine cognition*, *self-reflection*, and *emergent un
 
 ---
 
-## Example – Phase 1
-
-Example interaction after setting up GAIA-0:
-
-Enter a word for GAIA-0 to analyze: laufen
-
-Word: laufen
-Part of speech: verb
-Definitions:
-
-- sich zu Fuß fortbewegen
-
-- funktionieren oder in Betrieb sein
-- Example sentences:
-
-- Ich laufe zur Schule.
-
-- Die Maschine läuft gut.
-
 ## Requirements
 
 - Python 3.10 or higher  
-- No external dependencies in Phase 1  
-- All knowledge stored locally in JSON format  
+- No external dependencies in early phases  
+- All knowledge and memories stored locally in JSON format  
 
 ---
 
