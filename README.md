@@ -26,12 +26,29 @@ This project focuses on *machine cognition*, *self-reflection*, and *emergent un
 
 ---
 
+### Phase 2.5: Guided Sentence Generation
+
+GAIA-0 can now form sentences intentionally based on user input.  
+It supports generating sentences with specific subjects or verbs, enabling more controlled and meaningful linguistic behavior.
+
+Example:
+
+- Select an option:
+1. Generate random sentence
+2. Generate sentence with specific subject
+3. Generate sentence with specific verb
+
+- Option 2:
+Enter a subject (noun): Katze
+GAIA-0 says: Katze laufen Hund
+
 ## Core Components
 
 | File | Description |
 |------|--------------|
 | `core/parser.py` | Loads and manages the word database (`dictionary.json`). Enables GAIA-0 to understand lexical properties. |
 | `core/grammar.py` | Interprets sentence structure and grammatical roles. |
+| `core/generator.py` | Generates sentences based on known words. Supports random and targeted sentence creation (Phase 2.5). |
 | `core/brain.py` | Core cognitive loop (planned for Phase 3+). Handles internal states, thoughts, and reflection. |
 | `data/knowledge/dictionary.json` | Structured lexical data: word meanings, grammar, and examples. |
 

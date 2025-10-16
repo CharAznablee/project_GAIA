@@ -1,13 +1,7 @@
 """
 main.py
 --------
-Phase 2: Simple sentence generation using GAIA-0's Lexicon.
-
-In this phase, GAIA-0 can generate random Subject-Verb-Object (SVO) sentences
-based on the known words in dictionary.json.
-
-- Option 1: Generate random sentences automatically
-- Option 2: Let the user trigger generation interactively
+Phase 2.5: Targeted sentence generation test.
 """
 # Import the Lexicon class from core/parser.py
 from core.parser import Lexicon
@@ -27,25 +21,27 @@ grammar = Grammar(lexicon)
 # Initialize the SentenceGenerator for Phase 2
 generator = SentenceGenerator(lexicon)
 
-print("\n--- Phase 2: Sentence Generation Test ---")
+print("\n--- Phase 2.5: Targeted Sentence Generation ---")
 
-# --- Option 1: Generate predefined number of random sentences ---
-for i in range(5):
-    sentence = generator.generate_sentence()
-    print(f"Generated Sentence {i+1}: {sentence}")
-    
-print("--- End of automatic generation ---\n")
-
-# --- Option 2: Interactive user Loop ---
 while True:
-    user_input = input("Type 'generate' for a new sentence or 'exit' to quit: ").strip().lower()
+    print("\nOptions:")
+    print("1 - Generate random sentence")
+    print("2 - Generate sentence with specific subject")
+    print("3 - Generate sentence with specific verb")
+    print("exit - Quit program")
+    
+    user_input = input("\nSelect an option: ").strip().lower()
     
     if user_input == "exit":
         print("Exiting GAIA Sentence Generator.")
         break
-    elif user_input == "generate":
-        # Generate a new random sentence
-        sentence = generator.generate_sentence()
-        print(f"GAIA says: {sentence}")
+    elif user_input == "1":
+        print("GAIA says:", generator.generate_sentence())
+    elif user_input == "2":
+        subject = input("Enter a subject (noun): ").strip()
+        print("GAIA says:", generator.generate_with_subject(subject))
+    elif user_input == "3":
+        verb = input("Enter a verb: ").strip()
+        print("GAIA says:", generator.generate_with_verb(verb))
     else:
-        print("Invalid command. Please type 'generate' or 'exit'.")
+        print("Invalid option. Please choose 1, 2, 3, or exit.")
